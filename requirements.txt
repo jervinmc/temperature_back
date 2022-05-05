@@ -11,4 +11,4 @@ schedule
 apscheduler
 pyjwt
 pusher
-mysql==0.0.3
+mysql-connector==2.2.9
