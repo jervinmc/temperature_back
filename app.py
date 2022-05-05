@@ -121,9 +121,8 @@ class TempSend(Resource):
         self.db=Database()
 
     def get(self,pk=None):
-        res = request.get_json()
         data = self.db.insert(f"INSERT INTO thermal(temp,date) values({pk},'{ct}')")
-        pusher_client.trigger('temperature', 'my-test', {'temp': pk,'user_id':res.get("user_id")})
+        pusher_client.trigger('temperature', 'my-test', {'temp': pk,'user_id':''})
         # listitem = []
         # for x in data:
         #     listitem.append({"id":x[0],"temperature":x[1]})
@@ -183,4 +182,4 @@ api.add_resource(UserRecord,'/api/v1/user_record')
 api.add_resource(Notification,'/api/v1/notification')
 
 if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0',port=config("PORT"))
+    app.run(debug=True,host='localhost',port=config("PORT"))
