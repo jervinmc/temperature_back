@@ -2,24 +2,20 @@ from flask import Response
 from flask import Flask, jsonify, request,redirect
 from flask_restful import Resource, Api
 from flask_cors import CORS
-#Imports
-import string
-import requests
-import json
-import random
-from email.mime.multipart import MIMEMultipart
-from email.mime.text import MIMEText
 from datetime import datetime
 import smtplib
-import nltk.classify
-from sklearn.svm import LinearSVC
-import requests
-import random
-import string
-from functools import wraps
-import time
 from Database import Database
 import boto3
+import jwt
+import os
+import schedule
+import time
+import string
+import random
+from decouple import config
+import boto3
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import os
 now = datetime.now().date()
 import datetime
