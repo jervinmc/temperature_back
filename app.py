@@ -182,4 +182,4 @@ api.add_resource(UserRecord,'/api/v1/user_record')
 api.add_resource(Notification,'/api/v1/notification')
 
 if __name__ == "__main__":
-    app.run(debug=True,host='localhost',port=config("PORT"))
+    app.run(debug=True,host='0.0.0.0',port=config("PORT"))
