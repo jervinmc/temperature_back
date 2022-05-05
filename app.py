@@ -176,7 +176,7 @@ class Login(Resource):
 
 
 api.add_resource(Temperature,'/api/v1/temperature')
-api.add_resource(TempSend,'/api/v1/tempsend/<double:pk>')
+api.add_resource(TempSend,'/api/v1/tempsend/<string:pk>')
 api.add_resource(Login,'/api/v1/login')
 api.add_resource(UserRecord,'/api/v1/user_record')
 api.add_resource(Notification,'/api/v1/notification')
