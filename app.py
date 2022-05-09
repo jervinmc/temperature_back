@@ -137,18 +137,78 @@ class UserRecord(Resource):
         data = self.db.query("SELECT * FROM users_record")
         listitem = []
         for x in data:
-            listitem.append({"firstname":x[0],"lastname":x[1],"age":x[2],"address":x[3],"gender":x[4],"temp":x[5]})
+            listitem.append({"firstname":x[0],"lastname":x[1],"age":x[2],"address":x[3],"gender":x[4],"temp":x[5],"date":x[6],"status":x[7]})
         return listitem
 
     def post(self,pk=None):
         res = request.get_json()
-        data = self.db.insert(f"INSERT INTO users_record values('{res.get('firstname')}','{res.get('lastname')}',{res.get('age')},'{res.get('address')}','{res.get('gender')}',{res.get('temp')},{ct})")
+        data = self.db.insert(f"INSERT INTO users_record values('{res.get('firstname')}','{res.get('lastname')}',{res.get('age')},'{res.get('address')}','{res.get('gender')}',{res.get('temp')},'{ct}','{res.get('status')}')")
         # pusher_client.trigger('temperature', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
         # listitem = []
         # for x in data:
         #     listitem.append({"id":x[0],"temperature":x[1]})
         return data 
+    
+    def patch(self,pk=None):
+        res = request.get_json()
+        self.db.insert(f"update users_record set status='{res.get('status')}' where firstname='{res.get('firstname')}' and lastname='{res.get('lastname')}'")
+        # pusher_client.trigger('temperature', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
+        # listitem = []
+        # for x in data:
+        #     listitem.append({"id":x[0],"temperature":x[1]})
+        return "" 
 
+
+
+class Dashboard(Resource):
+    def __init__(self):
+        self.db=Database()
+
+    def get(self,pk=None):
+        res = self.db.query("SELECT * FROM users_record where age>6 and age<25")
+        return res
+
+
+class Usermanagement(Resource):
+    def __init__(self):
+        self.db=Database()
+
+    def post(self,pk=None):
+        data = request.get_json()
+        res = self.db.insert(f"INSERT INTO usermanagement values(1,'{data.get('email')}','{data.get('password')}','{data.get('account_type')}')")
+        return res
+    def get(self,pk=None):
+        listitem = []
+        try:
+            res = self.db.query(f"SELECT * FROM usermanagement")
+            for x in res:
+                listitem.append({"email":x[1],"account_type":x[3]})
+            return listitem 
+        except Exception as e:
+            print(e)
+            return ""
+
+class Logs(Resource):
+    def __init__(self):
+        self.db=Database()
+
+    def post(self,pk=None):
+        data = request.get_json()
+        res = self.db.insert(f"INSERT INTO logs values('{data.get('email')}','{data.get('account_type')}','{ct}')")
+        return res
+        
+    def get(self,pk=None):
+        print("okay")
+        listitem = []
+        try:
+            res = self.db.query(f"SELECT * FROM logs")
+            print(res)
+            for x in res:
+                listitem.append({"email":x[0],"account_type":x[1],"timestamp":str(x[2])})
+            return listitem 
+        except Exception as e:
+            print(e)
+            return ""
 
 
 class Login(Resource):
@@ -180,6 +240,11 @@ api.add_resource(TempSend,'/api/v1/tempsend/<string:pk>')
 api.add_resource(Login,'/api/v1/login')
 api.add_resource(UserRecord,'/api/v1/user_record')
 api.add_resource(Notification,'/api/v1/notification')
+api.add_resource(Dashboard,'/api/v1/dashboard')
+api.add_resource(Usermanagement,'/api/v1/usermanagement')
+api.add_resource(Logs,'/api/v1/logs')
+
+
 
 if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0',port=config("PORT"))
+    app.run(debug=True,host="0.0.0.0",port=config("PORT"))
