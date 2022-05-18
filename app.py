@@ -99,6 +99,7 @@ class Temperature(Resource):
 
 
     def get(self,pk=None):
+        print("test")
         data = self.db.query("SELECT * FROM thermal order by id DESC")
         listitem = []
         for x in data:
