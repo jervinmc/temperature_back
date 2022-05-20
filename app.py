@@ -23,7 +23,7 @@ app=Flask(__name__)
 CORS(app)
 api=Api(app)
 from decouple import config
-ct = datetime.datetime.now()
+
 import pusher
 from decouple import config
 pusher_client = pusher.Pusher(
@@ -81,6 +81,7 @@ class Notification(Resource):
         return listitem
 
     def post(self,pk=None):
+        ct = datetime.datetime.now()
         res = request.get_json()
         data = self.db.insert(f"INSERT INTO notification values('{res.get('title')}','{ct}','no')")
         pusher_client.trigger('notification', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
@@ -107,8 +108,12 @@ class Temperature(Resource):
         return listitem
 
     def post(self,pk=None):
+        ct = datetime.datetime.now()
         res = request.get_json()
         data = self.db.insert(f"INSERT INTO thermal(temp,date) values({res.get('temperature')},'{ct}')")
+        if(res.get('temperature')>38):
+            self.db.insert(f"INSERT INTO notification values('New high temp detected ! {res.get('temperature')} at blk1 lot 35 sterling manors subd. Anabu 1-c','{ct}','no')")
+            pusher_client.trigger('notification', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
         pusher_client.trigger('temperature', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
         # listitem = []
         # for x in data:
@@ -138,10 +143,11 @@ class UserRecord(Resource):
         data = self.db.query("SELECT * FROM users_record")
         listitem = []
         for x in data:
-            listitem.append({"firstname":x[0],"lastname":x[1],"age":x[2],"address":x[3],"gender":x[4],"temp":x[5],"date":x[6],"status":x[7]})
+            listitem.append({"firstname":x[0],"lastname":x[1],"age":x[2],"address":x[3],"gender":x[4],"temp":str(x[5]),"date":x[6],"status":x[7]})
         return listitem
 
     def post(self,pk=None):
+        ct = datetime.datetime.now()
         res = request.get_json()
         data = self.db.insert(f"INSERT INTO users_record values('{res.get('firstname')}','{res.get('lastname')}',{res.get('age')},'{res.get('address')}','{res.get('gender')}',{res.get('temp')},'{ct}','{res.get('status')}')")
         # pusher_client.trigger('temperature', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
@@ -194,6 +200,7 @@ class Logs(Resource):
         self.db=Database()
 
     def post(self,pk=None):
+        ct = datetime.datetime.now()
         data = request.get_json()
         res = self.db.insert(f"INSERT INTO logs values('{data.get('email')}','{data.get('account_type')}','{ct}')")
         return res
@@ -227,7 +234,7 @@ class Login(Resource):
                 return {"status":400}
             else:
                 print(res[0][0])
-                return {"id":res[0][0],"email":res[0][1],"password":res[0][2],"status":201}
+                return {"id":res[0][0],"email":res[0][1],"password":res[0][2],"account_type":res[0][3],"status":201}
             
         except Exception as e:
             print(e)
