@@ -24,6 +24,8 @@ CORS(app)
 api=Api(app)
 from decouple import config
 
+ct = ''
+
 import pusher
 from decouple import config
 pusher_client = pusher.Pusher(
