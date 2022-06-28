@@ -129,6 +129,7 @@ class TempSend(Resource):
         self.db=Database()
 
     def get(self,pk=None):
+        ct = datetime.datetime.now()
         data = self.db.insert(f"INSERT INTO thermal(temp,date) values({pk},'{ct}')")
         pusher_client.trigger('temperature', 'my-test', {'temp': pk,'user_id':''})
         # listitem = []
