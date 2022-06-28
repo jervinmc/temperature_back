@@ -129,9 +129,15 @@ class TempSend(Resource):
         self.db=Database()
 
     def get(self,pk=None):
+        print(pk)
         ct = datetime.datetime.now()
+        print(ct)
         data = self.db.insert(f"INSERT INTO thermal(temp,date) values({pk},'{ct}')")
         pusher_client.trigger('temperature', 'my-test', {'temp': pk,'user_id':''})
+        if(float(pk)>38):
+            self.db.insert(f"INSERT INTO notification values('New high temp detected ! {pk} at blk1 lot 35 sterling manors subd. Anabu 1-c','{ct}','no')")
+            pusher_client.trigger('notification', 'my-test', {'temp': pk,'user_id':''})
+        # pusher_client.trigger('temperature', 'my-test', {'temp': res.get("temperature"),'user_id':res.get("user_id")})
         # listitem = []
         # for x in data:
         #     listitem.append({"id":x[0],"temperature":x[1]})
