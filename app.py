@@ -79,7 +79,7 @@ class Notification(Resource):
         data = self.db.query("SELECT * FROM notification")
         listitem = []
         for x in data:
-            listitem.append({"title":x[0],"date":x[1],"isViewed":x[2]})
+            listitem.append({"title":x[0],"date":str(x[1]),"isViewed":x[2]})
         return listitem
 
     def post(self,pk=None):
@@ -106,7 +106,7 @@ class Temperature(Resource):
         data = self.db.query("SELECT * FROM thermal order by id DESC")
         listitem = []
         for x in data:
-            listitem.append({"id":x[0],"temperature":x[1],"date":x[2]})
+            listitem.append({"id":x[0],"temperature":str(x[1]),"date":str(x[2])})
         return listitem
 
     def post(self,pk=None):
@@ -146,7 +146,7 @@ class UserRecord(Resource):
         data = self.db.query("SELECT * FROM users_record")
         listitem = []
         for x in data:
-            listitem.append({"firstname":x[0],"lastname":x[1],"age":x[2],"address":x[3],"gender":x[4],"temp":str(x[5]),"date":x[6],"status":x[7]})
+            listitem.append({"firstname":x[0],"lastname":x[1],"age":x[2],"address":x[3],"gender":x[4],"temp":str(x[5]),"date":str(x[6]),"status":x[7]})
         return listitem
 
     def post(self,pk=None):
